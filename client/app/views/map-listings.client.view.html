@@ -8,3 +8,32 @@
     https://angular-ui.github.io/angular-google-maps/#!/api/markers
     https://angular-ui.github.io/angular-google-maps/#!/api/windows
   -->
+<div class="row" ng-controller="ListingsController" ng-init="find()">
+  <div class="col-md-offset-1 col-md-10">
+    <!-- 
+      If an error occurs while we try to save the listing using our server's API, it will show up here. 
+      This is made possible by handling any errors by binding them to $scope.error. 
+        <strong ng-bind="error"></strong> is similar to <strong>{{ error }}</strong>
+      From the Angular docs: 
+      "It is preferable to use ngBind instead of {{ expression }} if a template is momentarily displayed by the browser in its raw state before Angular compiles it. Since ngBind is an element attribute, it makes the bindings invisible to the user while the page is loading." (https://docs.angularjs.org/api/ng/directive/ngBind)
+     -->
+    <div ng-show="error" class="text-danger">
+      <strong ng-bind="error"></strong>
+    </div>
+    <div ng-show="success" class="text-success">
+      <strong ng-bind="success"></strong>
+    </div>
+
+    <ui-gmap-google-map center="map.center" zoom="map.zoom">
+      <ui-gmap-markers models="listings" coords="'coordinates'" idkey="'_id'" icon="'icon'">
+        <ui-gmap-windows show="show">
+                <div ng-non-bindable>
+                  <h3>{{name}}</h3>
+                  <p>Building Code: {{code}}</p>
+                  <p>{{address}}</p>
+                </div>
+            </ui-gmap-windows>
+      </ui-gmap-markers>
+    </ui-gmap-google-map>
+  </div>
+</div>

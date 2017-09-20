@@ -74,18 +74,49 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
     };
 
     $scope.update = function(isValid) {
-      /*
-        Fill in this function that should update a listing if the form is valid. Once the update has 
-        successfully finished, navigate back to the 'listing.list' state using $state.go(). If an error 
-        occurs, pass it to $scope.error. 
-       */
+      $scope.error = null; 
+
+      if (!isValid) {
+        $scope.$broadcast('show-errors-check-validity', 'articleForm');
+
+        return false;
+      }
+
+      /* Create a new listing object to replace the old listing object */
+      var listing = {
+        name: $scope.name, 
+        code: $scope.code, 
+        address: $scope.address
+      };
+
+      var id = $stateParams.listingId;
+
+      /* Update the article using the Listings factory */
+      Listings.update(id, listing)
+              .then(function(response) {
+                //if the object is successfully saved redirect back to the list page
+                $state.go('listings.list', { successMessage: 'Listing succesfully updated!' });
+              }, function(error) {
+                //otherwise display the error
+                $scope.error = 'Unable to update listing!\n' + error;
+              });
     };
 
     $scope.remove = function() {
-      /*
-        Implement the remove function. If the removal is successful, navigate back to 'listing.list'. Otherwise, 
-        display the error. 
-       */
+      $scope.error = null;
+
+      // get the listing to delete
+      var id = $stateParams.listingId;
+
+      /* Delete the article using the Listings factory */
+      Listings.delete(id)
+              .then(function(response) {
+                //if the object is successfully saved redirect back to the list page
+                $state.go('listings.list', { successMessage: 'Listing succesfully removed!' });
+              }, function(error) {
+                //otherwise display the error
+                $scope.error = 'Unable to remove listing!\n' + error;
+              });
     };
 
     /* Bind the success message to the scope if it exists as part of the current state */
